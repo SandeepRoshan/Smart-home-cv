@@ -1,4 +1,5 @@
 import cv2
+from keras.src.callbacks.model_checkpoint import ModelCheckpoint
 import numpy as np
 from PIL import Image
 import os
@@ -7,7 +8,7 @@ import cv2
 import os
 import h5py
 import dlib
-from imutils import face_utils
+from imutils import face_utils  
 from keras.models import load_model
 import sys
 from keras.models import Sequential
@@ -76,14 +77,15 @@ faces /= 255.
 
 x_train, x_test, y_train, y_test = train_test_split(faces,ids, test_size = 0.2, random_state = 0)
 
-checkpoint = callbacks.ModelCheckpoint('./trained_model.h5',
-                                           save_best_only=True, save_weights_only=True, verbose=1)
+checkpoint_callback = ModelCheckpoint(filepath='./trained_model.weights.h5',
+                                      save_weights_only=True)
+
                                     
 model.fit(x_train, y_train,
              batch_size=32,
              epochs=10,
              validation_data=(x_test, y_test),
-             shuffle=True,callbacks=[checkpoint])
+             shuffle=True,callbacks=[checkpoint_callback])
              
 
 # Print the numer of faces trained and end program
